@@ -5,3 +5,4 @@ Release/
 *.suo
 SaveBackup/
 TestFolder/
+.vs/

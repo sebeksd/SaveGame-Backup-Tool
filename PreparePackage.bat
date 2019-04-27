@@ -14,5 +14,5 @@ xcopy "%SourcePath%*.exe" "%DestinationCompilePath%" /y
 xcopy "%~dp0*.md" "%DestinationCompilePath%" /y
 xcopy "%~dp0LICENSE" "%DestinationCompilePath%" /y
 
-7z.exe a -mx9 "%DestinationPath%SaveGameBackupTool_Portable.7z" "%DestinationCompilePath%*.exe" "%DestinationCompilePath%*.dll" "%DestinationCompilePath%*.md"
+7z.exe a -mx9 "%DestinationPath%SaveGameBackupTool_Portable.7z" "%DestinationCompilePath%*.exe" "%DestinationCompilePath%*.dll" "%DestinationCompilePath%*.md" "%DestinationCompilePath%LICENSE"
 
