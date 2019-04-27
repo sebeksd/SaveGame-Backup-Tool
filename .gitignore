@@ -1,0 +1,7 @@
+SaveGame Backup Tool/bin/
+SaveGame Backup Tool/obj/
+packages/
+Release/
+*.suo
+SaveBackup/
+TestFolder/
