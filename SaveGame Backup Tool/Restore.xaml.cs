@@ -22,7 +22,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.IO;
-using System.Windows.Media;
 using System.Threading;
 using System.Windows.Threading;
 using System;
@@ -37,6 +36,8 @@ namespace SaveGameBackupTool
         private BackupMaker fBackupMaker = null;
         private BackupTask fBackupTask = null;
 
+        private string[] fFileList;
+
         private static Action EmptyDelegate = delegate () { };
 
         public Restore()
@@ -47,20 +48,20 @@ namespace SaveGameBackupTool
         private bool ListFiles()
         {
             string lErrorMessage = "";
-            string[] lFileList = fBackupMaker.GetBackupsList(fBackupTask, ref lErrorMessage);
+            fFileList = fBackupMaker.GetBackupsList(fBackupTask, ref lErrorMessage);
 
-            if (lFileList != null)
+            if (fFileList != null)
             {
+                ObservableCollection<string> lList = new ObservableCollection<string>();
+
                 // convert file paths to FileNames
-                for (int i = 0; i < lFileList.Length; i++)
+                for (int i = 0; i < fFileList.Length; i++)
                 {
-                    lFileList[i] = System.IO.Path.GetFileName(lFileList[i]);
+                    lList.Add(System.IO.Path.GetFileName(fFileList[i]));
                 }
-
-                ObservableCollection<string> lList = new ObservableCollection<string>(lFileList);
-                listBoxBackupFiles.DataContext = lList;
-
+                
                 Binding lBinding = new Binding();
+                listBoxBackupFiles.DataContext = lList;
                 listBoxBackupFiles.SetBinding(ListBox.ItemsSourceProperty, lBinding);
                 listBoxBackupFiles.ScrollIntoView(listBoxBackupFiles.Items[listBoxBackupFiles.Items.Count - 1]);
 
@@ -90,7 +91,7 @@ namespace SaveGameBackupTool
         private bool BackupBeforeRestore()
         {
             string lErrorMessage = "";
-            bool lResult = fBackupMaker.MakeBackup(fBackupTask, "-pre_restore", ref lErrorMessage);
+            bool lResult = fBackupMaker.MakeBackup(fBackupTask, BackupType.btRestore, ref lErrorMessage);
             fBackupTask.SetLastBackupStatus(lResult, lErrorMessage);
             return lResult;
         }
@@ -121,7 +122,7 @@ namespace SaveGameBackupTool
                 labelStatus.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
                 Thread.Sleep(1);
 
-                if (fBackupMaker.RestoreBackup(fBackupTask, Path.GetFullPath(Path.Combine(fBackupTask.Settings.DestinationPathHelper.DirectoryPath, listBoxBackupFiles.SelectedItem.ToString()))))
+                if (fBackupMaker.RestoreBackup(fBackupTask, fFileList[listBoxBackupFiles.SelectedIndex]))
                 {
                     labelStatus.Content = "Status: restored";
                 }

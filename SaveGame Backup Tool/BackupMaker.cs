@@ -25,12 +25,54 @@ using System.Text.RegularExpressions;
 
 namespace SaveGameBackupTool
 {
+    public enum BackupType
+    {
+        btNormal,
+        btManual,
+        btRestore
+    }
+
     public class BackupMaker
     {
         public BackupMaker()
         {
 
 
+        }
+
+        private string BackupTypeToFilePostfix(BackupType lType)
+        {
+            switch (lType)
+            {
+                case BackupType.btManual:
+                    return "-manual";
+                case BackupType.btRestore:
+                    return "-pre_restore";
+                default:
+                    return "";
+            }
+        }
+
+        private string DirectoryForBakupType(BackupType lType, string lDestinationPath)
+        {
+            string lSubFolder;
+            switch (lType)
+            {
+                case BackupType.btManual:
+                    lSubFolder = "Manual";
+                    break;
+                case BackupType.btRestore:
+                    lSubFolder = "OnRestore";
+                    break;
+                default:
+                    lSubFolder = "";
+                    break;
+            }
+
+            if (!String.IsNullOrEmpty(lSubFolder))
+                return Path.Combine(lDestinationPath, lSubFolder + "\\");
+            else
+                return lDestinationPath;
         }
 
         private bool CheckFilterForFile(string lFileFilterRegex, string lFileName)
@@ -179,22 +221,23 @@ namespace SaveGameBackupTool
             }
         }
 
-        public bool MakeBackup(BackupTask lBackupTask, string lPostfix, ref string pErrorMessage)
+        public bool MakeBackup(BackupTask lBackupTask, BackupType lType, ref string pErrorMessage)
         {
             string lBackupFileName = DateTime.Now.ToString(lBackupTask.Settings.BackupFileNamePattern);
-            lBackupFileName += lPostfix;
+            lBackupFileName += BackupTypeToFilePostfix(lType);
             lBackupFileName += ".zip";
+            string lDestinationPath = DirectoryForBakupType(lType, lBackupTask.Settings.DestinationPath);
 
             try
             {
                 // to be sure that backup dir exists
-                Directory.CreateDirectory(lBackupTask.Settings.DestinationPath);
+                Directory.CreateDirectory(lDestinationPath);
 
                 // try to make a backup
                 if (lBackupTask.Settings.SourcePathHelper.IsFile)
-                    ZipHelper.CreateFromFile(lBackupTask.Settings.SourcePathHelper.FilePath, lBackupTask.Settings.DestinationPath + lBackupFileName, CompressionLevel.Fastest, false, null, null);
+                    ZipHelper.CreateFromFile(lBackupTask.Settings.SourcePathHelper.FilePath, lDestinationPath + lBackupFileName, CompressionLevel.Fastest, false, null, null);
                 else
-                    ZipHelper.CreateFromDirectory(lBackupTask.Settings.SourcePathHelper.DirectoryPath, lBackupTask.Settings.DestinationPath + lBackupFileName, CompressionLevel.Fastest, false, null, lFilterFileName => !CheckFilterForFile(lBackupTask.Settings.FileFilterRegex, lFilterFileName));
+                    ZipHelper.CreateFromDirectory(lBackupTask.Settings.SourcePathHelper.DirectoryPath, lDestinationPath + lBackupFileName, CompressionLevel.Fastest, false, null, lFilterFileName => !CheckFilterForFile(lBackupTask.Settings.FileFilterRegex, lFilterFileName));
                 
                 pErrorMessage = "";
 
@@ -207,7 +250,7 @@ namespace SaveGameBackupTool
                 try
                 {
                     // probably file was created but content is corrupted or just not complete, remove it
-                    File.Delete(lBackupTask.Settings.DestinationPath + lBackupFileName);
+                    File.Delete(lDestinationPath + lBackupFileName);
                 }
                 catch
                 {

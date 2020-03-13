@@ -213,7 +213,7 @@ namespace SaveGameBackupTool
             textBoxBackupFileNamePattern.ToolTip = "Backup create new ZIP file, this pattern is used to name this result file.\r\n\r\n" +
                 "Remember to set pattern the way that file name will be unique (eg time),\r\n" +
                 "function to create name from the pattern is DateTime.ToString for more info about this pattern possibilities search Internet :)";
-            checkBoxAutomaticBackup.ToolTip = "Check if you want this tusk to be run every few minutes (backup will be made only if files were modified).";
+            checkBoxAutomaticBackup.ToolTip = "Check if you want this task to be run every few minutes (backup will be made only if files were modified).";
             buttonForceBackup.ToolTip = "Perform a backup regardless of whether the files have been modified, if files are locked it will fail.";
             decimalUpDownBackupEvery.ToolTip = "Task will launch every few minutes (value set in this field) and it will check if file was modified and also if file is not locked.\r\n" +
                 "If file was not modified from last backup or it is locked for reading then next check will be triggered every 30 seconds (till backup is made).";
@@ -221,9 +221,11 @@ namespace SaveGameBackupTool
                 "In tray icon mode this status is also presented by icon in tray.";
 
             checkBoxAutomaticDestinationDirSizeLimit.ToolTip = "If this option is checked application will cleanup older files/backups from destination directory to maintain size limit set in by user (at least 4 last files remains).\r\n" +
-                "WARNING! Make sure destination directory is used only by one task/game because files are removed by creation date and file names are not used to chcek if file is from different task!";
+                "Manual and pre-restore backups are not counted towards this limit and they are not deleted (if needed you need to clean them manually).\r\n" +
+                "WARNING! Make sure destination directory is used only by one task/game because files are removed by creation date and file names are not used to check if file is from different task!";
             decimalUpDownDestinationDirSizeLimit.ToolTip = "Limit value in [MB] for automated deletion of older files/backups from destination directory (at least 4 last files remains).\r\n" +
-                "WARNING! Make sure destination directory is used only by one task/game because files are removed by creation date and file names are not used to chcek if file is from different task!";
+                "Manual and pre-restore backups are not counted towards this limit and they are not deleted (if needed you need to clean them manually).\r\n" +
+                "WARNING! Make sure destination directory is used only by one task/game because files are removed by creation date and file names are not used to check if file is from different task!";
         }
 
         private void UpdateGlobalStatus(bool lSuccess)
@@ -430,7 +432,7 @@ namespace SaveGameBackupTool
                         else if (lFileWasModified)
                         {
                             // success and file was modified
-                            lErrorOccurred = !fBackupMaker.MakeBackup(lBackupTask, "", ref lErrorMessage);
+                            lErrorOccurred = !fBackupMaker.MakeBackup(lBackupTask, BackupType.btNormal, ref lErrorMessage);
                             lBackupTask.SetLastBackupStatus(!lErrorOccurred, lErrorMessage);
                             lRefreshComboBox = true;
                         }
@@ -581,7 +583,7 @@ namespace SaveGameBackupTool
             BackupTask lBackupTask = fSettings.Settings.BackupTasks[fSelectedBackupTaskIndex];
 
             string lErrorMessage = "";
-            lBackupTask.SetLastBackupStatus(fBackupMaker.MakeBackup(lBackupTask, "-manual", ref lErrorMessage), lErrorMessage);
+            lBackupTask.SetLastBackupStatus(fBackupMaker.MakeBackup(lBackupTask, BackupType.btManual, ref lErrorMessage), lErrorMessage);
 
             // we made backup of currently selected item, refresh GUI to refresh last backup time
             SelectTaskByIndex(-1, false); // reselect same item, refresh interface
