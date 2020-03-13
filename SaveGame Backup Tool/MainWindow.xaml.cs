@@ -260,6 +260,7 @@ namespace SaveGameBackupTool
                 ComboBoxItem lItem = new ComboBoxItem();
                 lItem.Content = lBackupTask;
                 lItem.Foreground = GetBackupStatusColorForText(lBackupTask.BackupChecked, lTaskSuccess);
+                //lItem.FontFamily = new FontFamily("Segoe UI Mono");
                 comboBoxBackupTasks.Items.Add(lItem);
 
                 // global status only for autobackup
@@ -429,7 +430,7 @@ namespace SaveGameBackupTool
                         else if (lFileWasModified)
                         {
                             // success and file was modified
-                            lErrorOccurred = !fBackupMaker.MakeBackup(lBackupTask, false, ref lErrorMessage);
+                            lErrorOccurred = !fBackupMaker.MakeBackup(lBackupTask, "", ref lErrorMessage);
                             lBackupTask.SetLastBackupStatus(!lErrorOccurred, lErrorMessage);
                             lRefreshComboBox = true;
                         }
@@ -580,7 +581,7 @@ namespace SaveGameBackupTool
             BackupTask lBackupTask = fSettings.Settings.BackupTasks[fSelectedBackupTaskIndex];
 
             string lErrorMessage = "";
-            lBackupTask.SetLastBackupStatus(fBackupMaker.MakeBackup(lBackupTask, true, ref lErrorMessage), lErrorMessage);
+            lBackupTask.SetLastBackupStatus(fBackupMaker.MakeBackup(lBackupTask, "-manual", ref lErrorMessage), lErrorMessage);
 
             // we made backup of currently selected item, refresh GUI to refresh last backup time
             SelectTaskByIndex(-1, false); // reselect same item, refresh interface
@@ -737,6 +738,9 @@ namespace SaveGameBackupTool
                 fRestore.Close();
 
             fRestore = new Restore();
+            fRestore.Owner = this;
+            fRestore.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             if (fRestore.SetBackupMakerAndTask(fBackupMaker, fSettings.Settings.BackupTasks[fSelectedBackupTaskIndex]))
                 fRestore.Show();
             else

@@ -179,11 +179,10 @@ namespace SaveGameBackupTool
             }
         }
 
-        public bool MakeBackup(BackupTask lBackupTask, bool lIsManualBackup, ref string pErrorMessage)
+        public bool MakeBackup(BackupTask lBackupTask, string lPostfix, ref string pErrorMessage)
         {
             string lBackupFileName = DateTime.Now.ToString(lBackupTask.Settings.BackupFileNamePattern);
-            if (lIsManualBackup)
-                lBackupFileName += "-manual";
+            lBackupFileName += lPostfix;
             lBackupFileName += ".zip";
 
             try
@@ -237,25 +236,33 @@ namespace SaveGameBackupTool
             return null;
         }
 
-        public void RestoreBackup(BackupTask lBackupTask, string lBackupFilePath)
+        public bool RestoreBackup(BackupTask lBackupTask, string lBackupFilePath)
         {
             if (lBackupTask.Settings.SourcePathHelper.PathCorrect && lBackupTask.Settings.DestinationPathHelper.PathCorrect)
             {
                 bool lFileModified = false; // TODO maybe warning on restore that files changed
                 bool lFileLocked = false;
                 string lErrorMessage = "";
-                CheckFilesToBackup(lBackupTask, ref lFileModified, ref lFileLocked, ref lErrorMessage);
 
                 // some file is locked, stop restore
-                if (!lFileLocked)
+                if (CheckFilesToBackup(lBackupTask, ref lFileModified, ref lFileLocked, ref lErrorMessage) && !lFileLocked)
                 {
-                    ZipHelper.ExtractToDirectory(lBackupFilePath, lBackupTask.Settings.SourcePathHelper.DirectoryPath);
+                    try
+                    {
+                        ZipHelper.ExtractToDirectory(lBackupFilePath, lBackupTask.Settings.SourcePathHelper.DirectoryPath);
+                        return true;
+                    }
+                    catch
+                    { 
+                    }
                 }
                 else
                 {
                     // TODO error message
                 }
             }
+
+            return false;
         }
     }
 }

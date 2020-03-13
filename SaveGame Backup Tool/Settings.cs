@@ -265,7 +265,7 @@ namespace SaveGameBackupTool
             // Using On/Off instead Active/Not active because it is shorten and more important there is smaller difference in length (so its looking better on list)
             string lResult;
             if (Settings.IsAutoBackupActive)
-                lResult = " [ On  - " + GetLastBackupTime() + " ] ";
+                lResult = " [ On - " + GetLastBackupTime() + " ] ";
             else
                 lResult = " [ Off - " + GetLastBackupTime() + " ] ";
 

@@ -5,11 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SaveGameBackupTool"
         mc:Ignorable="d"
-        Title="Restore" Height="450" Width="500" MinWidth="500" MinHeight="450">
+        Title="Restore" Height="496.667" Width="500" MinWidth="500" MinHeight="450">
     <Grid>
-        <ListBox x:Name="listBoxBackupFiles" Margin="10,10,10,35"/>
+        <ListBox x:Name="listBoxBackupFiles" Margin="10,10,10,57"/>
         <Button x:Name="buttonRestore" Content="Restore" Margin="10,0,0,10" Click="ButtonRestore_Click" HorizontalAlignment="Left" Width="75" Height="20" VerticalAlignment="Bottom"/>
         <Button x:Name="buttonClose" Content="Close" Margin="0,0,10,10" Click="buttonClose_Click" HorizontalAlignment="Right" Width="75" Height="20" VerticalAlignment="Bottom"/>
+        <Label x:Name="labelStatus" Content="Status: ..." Margin="90,0,170,6" Height="26" VerticalAlignment="Bottom"/>
+        <Button x:Name="buttonRefresh" Content="Refresh" Margin="0,0,90,10" Height="20" VerticalAlignment="Bottom" RenderTransformOrigin="0.507,2.05" Click="buttonRefresh_Click" HorizontalAlignment="Right" Width="75"/>
+        <CheckBox x:Name="checkBoxBackupBeforeRestore" Content="Make new backup before restoring" Margin="10,0,10,37" IsChecked="True" Height="15" VerticalAlignment="Bottom"/>
 
     </Grid>
 </Window>

@@ -22,6 +22,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.IO;
+using System.Windows.Media;
+using System.Threading;
+using System.Windows.Threading;
+using System;
 
 namespace SaveGameBackupTool
 {
@@ -33,19 +37,18 @@ namespace SaveGameBackupTool
         private BackupMaker fBackupMaker = null;
         private BackupTask fBackupTask = null;
 
+        private static Action EmptyDelegate = delegate () { };
+
         public Restore()
         {
             InitializeComponent();
         }
 
-        public bool SetBackupMakerAndTask(BackupMaker lBackupMaker, BackupTask lBackupTask)
+        private bool ListFiles()
         {
-            fBackupMaker = lBackupMaker;
-            fBackupTask = lBackupTask;
-
             string lErrorMessage = "";
-            string[] lFileList = fBackupMaker.GetBackupsList(lBackupTask, ref lErrorMessage);
-           
+            string[] lFileList = fBackupMaker.GetBackupsList(fBackupTask, ref lErrorMessage);
+
             if (lFileList != null)
             {
                 // convert file paths to FileNames
@@ -59,6 +62,7 @@ namespace SaveGameBackupTool
 
                 Binding lBinding = new Binding();
                 listBoxBackupFiles.SetBinding(ListBox.ItemsSourceProperty, lBinding);
+                listBoxBackupFiles.ScrollIntoView(listBoxBackupFiles.Items[listBoxBackupFiles.Items.Count - 1]);
 
                 return true;
             }
@@ -68,15 +72,72 @@ namespace SaveGameBackupTool
             }
         }
 
+        public bool SetBackupMakerAndTask(BackupMaker lBackupMaker, BackupTask lBackupTask)
+        {
+            fBackupMaker = lBackupMaker;
+            fBackupTask = lBackupTask;
+
+            this.Title = "Restore: " + lBackupTask.Settings.Name;
+
+            return ListFiles();
+        }
+
         private void buttonClose_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
+        private bool BackupBeforeRestore()
+        {
+            string lErrorMessage = "";
+            bool lResult = fBackupMaker.MakeBackup(fBackupTask, "-pre_restore", ref lErrorMessage);
+            fBackupTask.SetLastBackupStatus(lResult, lErrorMessage);
+            return lResult;
+        }
+
         private void ButtonRestore_Click(object sender, RoutedEventArgs e)
         {
-            if ((listBoxBackupFiles.SelectedItem != null) && (fBackupMaker != null))             
-                fBackupMaker.RestoreBackup(fBackupTask, Path.GetFullPath(Path.Combine(fBackupTask.Settings.DestinationPathHelper.DirectoryPath, listBoxBackupFiles.SelectedItem.ToString())));
+            labelStatus.Content = "Status: ...";
+            labelStatus.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+            Thread.Sleep(1);
+
+            if (checkBoxBackupBeforeRestore.IsChecked == true)
+            {
+                labelStatus.Content = "Status: backingup";
+                labelStatus.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+                Thread.Sleep(1);
+                if (!BackupBeforeRestore())
+                {
+                    labelStatus.Content = "Status: backup failed";
+                    return;
+                }
+                else
+                    ListFiles();
+            }
+
+            if ((listBoxBackupFiles.SelectedItem != null) && (fBackupMaker != null))
+            {
+                labelStatus.Content = "Status: restoring";
+                labelStatus.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+                Thread.Sleep(1);
+
+                if (fBackupMaker.RestoreBackup(fBackupTask, Path.GetFullPath(Path.Combine(fBackupTask.Settings.DestinationPathHelper.DirectoryPath, listBoxBackupFiles.SelectedItem.ToString()))))
+                {
+                    labelStatus.Content = "Status: restored";
+                }
+                else
+                {
+                    labelStatus.Content = "Status: error";
+                }
+            }
+            else
+            {
+                labelStatus.Content = "Status: no item selected?";
+            }
+        }
+        private void buttonRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            ListFiles();
         }
     }
 }

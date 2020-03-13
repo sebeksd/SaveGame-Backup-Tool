@@ -59,7 +59,7 @@ namespace SaveGameBackupTool
                             BackupMaker lBackupMaker = new BackupMaker();
                             string lErrorMessage = "";
 
-                            if (lBackupMaker.MakeBackup(lBackupTask, false, ref lErrorMessage))
+                            if (lBackupMaker.MakeBackup(lBackupTask, "", ref lErrorMessage))
                                 Console.WriteLine("SUCCEED: Task '" + lBackupTask.Settings.Name + "' backup created");
                             else
                                 Console.WriteLine("FAILED: Task '" + lBackupTask.Settings.Name + "' backup failed: \r\n" + lErrorMessage);
