@@ -12,6 +12,9 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <GroupBox Header="Force Backup" Height="54" Margin="0,235,4,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="209">
+            <Grid HorizontalAlignment="Left" Height="44" Margin="0,0,-2,-1" VerticalAlignment="Top" Width="199"/>
+        </GroupBox>
         <Grid x:Name="gridTextEdits" Margin="10,30,7,0" Height="78" VerticalAlignment="Top">
             <Button x:Name="buttonGetSavesPathFile" Content="File" Margin="0,28,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.18,-1.275" Click="buttonGetSavesPathFile_Click" Height="24" HorizontalAlignment="Right" Width="28"/>
             <TextBox x:Name="textBoxSavesPath" Height="24" Margin="105,28,175,0" TextWrapping="NoWrap" VerticalAlignment="Top" TextChanged="textBoxSavesDirectory_TextChanged" LostFocus="textBox_LostFocus"/>
@@ -38,14 +41,14 @@
             <Label x:Name="labelError" Content="Last error:" HorizontalAlignment="Left" Margin="0,6,0,0" VerticalAlignment="Top"/>
             <TextBlock x:Name="textBlockLastError" Margin="10,32,7,10" TextWrapping="Wrap" Text="none" RenderTransformOrigin="0.311,0.109"/>
         </Grid>
-        <Button x:Name="buttonForceBackup" Content="Force backup now" Margin="0,258,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="109" Height="22" Click="buttonForceBackup_Click" RenderTransformOrigin="0.462,1.411"/>
+        <Button x:Name="buttonManualBackup" Content="Manual backup" Margin="0,258,111,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="95" Height="22" Click="buttonManualBackup_Click" RenderTransformOrigin="0.462,1.411"/>
         <ComboBox x:Name="comboBoxBackupTasks" Margin="37,3,124,0" VerticalAlignment="Top" IsEditable="false" SelectionChanged="comboBoxBackupTasks_SelectionChanged"/>
         <Button x:Name="buttonAddBackupTask" Content="+" HorizontalAlignment="Right" Margin="0,3,97,0" VerticalAlignment="Top" Width="22" Height="22" Click="buttonAddBackupTask_Click" RenderTransformOrigin="-3.289,0.767"/>
         <Button x:Name="buttonRemoveBackupTask" Content="-" Margin="0,3,70,0" VerticalAlignment="Top" Height="22" RenderTransformOrigin="-0.182,0.545" HorizontalAlignment="Right" Width="22" Click="buttonRemoveBackupTask_Click"/>
         <TextBox x:Name="textBoxFileNameFilter" HorizontalAlignment="Left" Height="24" Margin="10,140,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="222" TextChanged="textBoxFileNameFilter_TextChanged"/>
-        <Label x:Name="labelFileNameFilter" Content="Source files filter:" HorizontalAlignment="Left" Margin="10,114,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="labelFileNameFilter" Content="Source files filter:" HorizontalAlignment="Left" Margin="5,114,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textBoxBackupFileNamePattern" Height="24" Margin="242,140,10,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" TextChanged="textBoxBackupFileNamePattern_TextChanged"/>
-        <Label x:Name="labelBackupFileNamePattern" Content="Backup file name pattern:" HorizontalAlignment="Left" Margin="242,114,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="labelBackupFileNamePattern" Content="Backup file name pattern:" HorizontalAlignment="Left" Margin="237,114,0,0" VerticalAlignment="Top"/>
         <Rectangle x:Name="rectangleStatusIcon" HorizontalAlignment="Left" Height="22" Margin="10,3,0,0" Stroke="White" VerticalAlignment="Top" Width="22" Fill="#FFF4F4F5"/>
         <Button x:Name="buttonAbout" Content="About" Margin="0,3,7,0" VerticalAlignment="Top" Height="22" Click="buttonAbout_Click" HorizontalAlignment="Right" Width="42"/>
         <Label x:Name="labelDestinationDirSize" Content="Destination dir size:" HorizontalAlignment="Left" Margin="0,256,0,0" VerticalAlignment="Top"/>
@@ -53,7 +56,8 @@
         <CheckBox x:Name="checkBoxAutomaticDestinationDirSizeLimit" Content="Limit automatic backup space [MB]" HorizontalAlignment="Left" Margin="9,208,0,0" VerticalAlignment="Top" Width="513" Checked="checkBoxAutomaticDestinationDirSizeLimit_CheckedChanged" Unchecked="checkBoxAutomaticDestinationDirSizeLimit_CheckedChanged"/>
         <xctk:DecimalUpDown x:Name="decimalUpDownDestinationDirSizeLimit" Margin="0,208,8,0" VerticalAlignment="Top" Maximum="99999" Minimum="1" Value="1000" Text="Backup" HorizontalAlignment="Right" Width="57" ValueChanged="decimalUpDownDestinationDirSizeLimit_ValueChanged"/>
         <Button x:Name="ButtonTypicalLocations" Content="Typical locations" Margin="0,58,74,0" Click="ButtonTypicalLocations_Click" HorizontalAlignment="Right" Width="101" Height="24" VerticalAlignment="Top"/>
-        <Button x:Name="buttonRestore" Content="Restore" Margin="0,258,128,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55" Height="22" Click="ButtonRestore_Click" RenderTransformOrigin="0.462,1.411"/>
+        <Button x:Name="buttonRestore" Content="Restore" Margin="0,258,223,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55" Height="22" Click="ButtonRestore_Click" RenderTransformOrigin="0.462,1.411"/>
+        <Button x:Name="buttonNamedBackup" Content="Named backup" Margin="0,258,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="96" Height="22" RenderTransformOrigin="0.462,1.411" Click="buttonNamedBackup_Click"/>
 
     </Grid>
 </Window>

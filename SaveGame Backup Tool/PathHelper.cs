@@ -18,6 +18,7 @@
 */
 
 using System.IO;
+using System.Linq;
 
 namespace SaveGameBackupTool
 {
@@ -106,7 +107,12 @@ namespace SaveGameBackupTool
             if (fIsFile)
                 return new string[] { fFilePath };
             else if (IsDirectory)
-                return Directory.GetFiles(fDirectoryPath, "*", SearchOption.AllDirectories);
+            {
+                DirectoryInfo lDirInfo = new DirectoryInfo(fDirectoryPath);
+                FileInfo[] lFiles = lDirInfo.GetFiles("*", SearchOption.AllDirectories).OrderBy(f => f.CreationTime).ToArray();
+
+                return lFiles.Select(f => f.FullName).ToArray();//Directory.GetFiles(fDirectoryPath, "*", SearchOption.AllDirectories);
+            }
             else
                 return null;
         }

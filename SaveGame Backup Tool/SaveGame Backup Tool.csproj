@@ -100,6 +100,9 @@
     <Compile Include="ApplicationInstanceManager.cs" />
     <Compile Include="BackupMaker.cs" />
     <Compile Include="CommandLineParameters.cs" />
+    <Compile Include="NamedBackup.xaml.cs">
+      <DependentUpon>NamedBackup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PathHelper.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -127,6 +130,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="NamedBackup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Restore.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

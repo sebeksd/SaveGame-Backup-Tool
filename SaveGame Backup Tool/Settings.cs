@@ -114,6 +114,8 @@ namespace SaveGameBackupTool
         public bool BackupChecked = false; // this is only runtime, it says if backup was checked at least once after app started
         [System.Xml.Serialization.XmlIgnore]
         public long DestinationDirectorySize = -1;
+        [System.Xml.Serialization.XmlIgnore]
+        public long ManualAndPreRestoreBackupsSize = -1;
 
         [System.Xml.Serialization.XmlIgnore]
         public bool SourceFilesChanged = true; // this flag is used to know if this task require checking files for changes

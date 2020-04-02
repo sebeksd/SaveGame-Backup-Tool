@@ -197,7 +197,7 @@ namespace SaveGameBackupTool
             ToolTipService.SetShowDuration(textBoxFileNameFilter, cToolTipDuration);
             ToolTipService.SetShowDuration(textBoxBackupFileNamePattern, cToolTipDuration);
             ToolTipService.SetShowDuration(checkBoxAutomaticBackup, cToolTipDuration);
-            ToolTipService.SetShowDuration(buttonForceBackup, cToolTipDuration);
+            ToolTipService.SetShowDuration(buttonManualBackup, cToolTipDuration);
             ToolTipService.SetShowDuration(decimalUpDownBackupEvery, cToolTipDuration);
             ToolTipService.SetShowDuration(rectangleStatusIcon, cToolTipDuration);
             ToolTipService.SetShowDuration(checkBoxAutomaticDestinationDirSizeLimit, cToolTipDuration);
@@ -214,7 +214,7 @@ namespace SaveGameBackupTool
                 "Remember to set pattern the way that file name will be unique (eg time),\r\n" +
                 "function to create name from the pattern is DateTime.ToString for more info about this pattern possibilities search Internet :)";
             checkBoxAutomaticBackup.ToolTip = "Check if you want this task to be run every few minutes (backup will be made only if files were modified).";
-            buttonForceBackup.ToolTip = "Perform a backup regardless of whether the files have been modified, if files are locked it will fail.";
+            buttonManualBackup.ToolTip = "Perform a backup regardless of whether the files have been modified, if files are locked it will fail.";
             decimalUpDownBackupEvery.ToolTip = "Task will launch every few minutes (value set in this field) and it will check if file was modified and also if file is not locked.\r\n" +
                 "If file was not modified from last backup or it is locked for reading then next check will be triggered every 30 seconds (till backup is made).";
             rectangleStatusIcon.ToolTip = "Global tasks status (works only for automated tasks), blue - tasks not checked, green - all tasks succeed or nothing to do, red - some task failed.\r\n" +
@@ -307,7 +307,12 @@ namespace SaveGameBackupTool
                     textBoxBackupFileNamePattern.Text = lBackupTask.Settings.BackupFileNamePattern;
 
                     if (lBackupTask.DestinationDirectorySize > 0)
-                        labelDestinationDirSizeValue.Content = ByteSize.FromBytes(lBackupTask.DestinationDirectorySize).ToString();
+                    {
+                        if (lBackupTask.ManualAndPreRestoreBackupsSize > 0)
+                            labelDestinationDirSizeValue.Content = ByteSize.FromBytes(lBackupTask.DestinationDirectorySize).ToString() + " + " + ByteSize.FromBytes(lBackupTask.ManualAndPreRestoreBackupsSize).ToString();
+                        else
+                            labelDestinationDirSizeValue.Content = ByteSize.FromBytes(lBackupTask.DestinationDirectorySize).ToString();
+                    }
                     else if (lBackupTask.DestinationDirectorySize == 0)
                         labelDestinationDirSizeValue.Content = "[empty]";
                     else
@@ -578,12 +583,14 @@ namespace SaveGameBackupTool
             }
         }
 
-        private void buttonForceBackup_Click(object sender, RoutedEventArgs e)
+        private void buttonManualBackup_Click(object sender, RoutedEventArgs e)
         {
             BackupTask lBackupTask = fSettings.Settings.BackupTasks[fSelectedBackupTaskIndex];
 
             string lErrorMessage = "";
             lBackupTask.SetLastBackupStatus(fBackupMaker.MakeBackup(lBackupTask, BackupType.btManual, ref lErrorMessage), lErrorMessage);
+
+            fBackupMaker.RefreshDestinationDirectorySize(lBackupTask);
 
             // we made backup of currently selected item, refresh GUI to refresh last backup time
             SelectTaskByIndex(-1, false); // reselect same item, refresh interface
@@ -747,6 +754,26 @@ namespace SaveGameBackupTool
                 fRestore.Show();
             else
                 fRestore = null;
+        }
+
+        private void buttonNamedBackup_Click(object sender, RoutedEventArgs e)
+        {
+            NamedBackup lNamedBackupWindow = new NamedBackup();
+            lNamedBackupWindow.Owner = this;
+            lNamedBackupWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            if (lNamedBackupWindow.ShowDialog() == true)
+            {
+                BackupTask lBackupTask = fSettings.Settings.BackupTasks[fSelectedBackupTaskIndex];
+
+                string lErrorMessage = "";
+                lBackupTask.SetLastBackupStatus(fBackupMaker.MakeBackup(lBackupTask, BackupType.btManualWithCustomPostfix, lNamedBackupWindow.GetBackupName(), ref lErrorMessage), lErrorMessage);
+
+                fBackupMaker.RefreshDestinationDirectorySize(lBackupTask);
+
+                // we made backup of currently selected item, refresh GUI to refresh last backup time
+                SelectTaskByIndex(-1, false); // reselect same item, refresh interface   
+            }
         }
     }
 }

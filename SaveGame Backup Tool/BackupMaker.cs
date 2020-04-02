@@ -29,6 +29,7 @@ namespace SaveGameBackupTool
     {
         btNormal,
         btManual,
+        btManualWithCustomPostfix,
         btRestore
     }
 
@@ -40,7 +41,7 @@ namespace SaveGameBackupTool
 
         }
 
-        private string BackupTypeToFilePostfix(BackupType lType)
+        private string BackupTypeToFilePostfix(BackupType lType, string lManualPostfix)
         {
             switch (lType)
             {
@@ -48,6 +49,8 @@ namespace SaveGameBackupTool
                     return "-manual";
                 case BackupType.btRestore:
                     return "-pre_restore";
+                case BackupType.btManualWithCustomPostfix:
+                    return "-" + lManualPostfix;
                 default:
                     return "";
             }
@@ -59,10 +62,11 @@ namespace SaveGameBackupTool
             switch (lType)
             {
                 case BackupType.btManual:
+                case BackupType.btManualWithCustomPostfix:
                     lSubFolder = "Manual";
                     break;
                 case BackupType.btRestore:
-                    lSubFolder = "OnRestore";
+                    lSubFolder = "Pre-Restore";
                     break;
                 default:
                     lSubFolder = "";
@@ -186,6 +190,11 @@ namespace SaveGameBackupTool
         public void RefreshDestinationDirectorySize(BackupTask pBackupTask)
         {
             pBackupTask.DestinationDirectorySize = GetDirectorySize(pBackupTask.Settings.DestinationPath);
+
+            long lManualSize = GetDirectorySize(Path.Combine(pBackupTask.Settings.DestinationPath, "Manual"));
+            long lPreRestore = GetDirectorySize(Path.Combine(pBackupTask.Settings.DestinationPath, "Pre-Restore"));
+
+            pBackupTask.ManualAndPreRestoreBackupsSize = (lManualSize > 0 ? lManualSize: 0) + (lPreRestore > 0 ? lPreRestore : 0);
         }
 
         public void CleanUpOldBackups(BackupTask lBackupTask, ref string pErrorMessage)
@@ -193,7 +202,7 @@ namespace SaveGameBackupTool
             if (lBackupTask.DestinationDirectorySizeLimitReached())
             {
                 DirectoryInfo lDirInfo = new DirectoryInfo(lBackupTask.Settings.DestinationPath);
-                FileInfo[] lFiles = lDirInfo.GetFiles().OrderBy(p => p.CreationTime).ToArray();
+                FileInfo[] lFiles = lDirInfo.GetFiles().OrderBy(f => f.CreationTime).ToArray();
                 try
                 {
                     int lFilesCount = lFiles.Length;
@@ -223,8 +232,13 @@ namespace SaveGameBackupTool
 
         public bool MakeBackup(BackupTask lBackupTask, BackupType lType, ref string pErrorMessage)
         {
+            return MakeBackup(lBackupTask, lType, "", ref pErrorMessage);
+        }
+
+        public bool MakeBackup(BackupTask lBackupTask, BackupType lType, string lManualPostfix, ref string pErrorMessage)
+        {
             string lBackupFileName = DateTime.Now.ToString(lBackupTask.Settings.BackupFileNamePattern);
-            lBackupFileName += BackupTypeToFilePostfix(lType);
+            lBackupFileName += BackupTypeToFilePostfix(lType, lManualPostfix);
             lBackupFileName += ".zip";
             string lDestinationPath = DirectoryForBakupType(lType, lBackupTask.Settings.DestinationPath);
 
