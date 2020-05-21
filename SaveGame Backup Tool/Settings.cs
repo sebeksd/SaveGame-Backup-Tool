@@ -328,6 +328,7 @@ namespace SaveGameBackupTool
     public class SettingsManager
     {
         private string fSettingFileName = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\Settings.xml"; //Path.GetFileNameWithoutExtension(System.AppDomain.CurrentDomain.BaseDirectory) + "Settings.xml";
+        private string fSettingTempFileName = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\Settings.tmp"; //Path.GetFileNameWithoutExtension(System.AppDomain.CurrentDomain.BaseDirectory) + "Settings.tmp";
         private AppSettings fSettings = new AppSettings();
 
         public AppSettings Settings
@@ -378,8 +379,33 @@ namespace SaveGameBackupTool
         public void LoadConfig()
         {
             bool lIsFileReadable = false;
+
             try
             {
+                try
+                {
+                    // before reading check if everything was right during last save
+                    if (File.Exists(fSettingFileName))
+                    {
+                        // check if both files are present, this could mean that save was interrupted during writing to file
+                        if (File.Exists(fSettingTempFileName))
+                        {
+                            // tmp file can be corrupted, remove
+                            File.Delete(fSettingTempFileName);
+                        }
+                    }
+                    // check if last save was interrupted during "delete old file"/"rename new file"
+                    else if (File.Exists(fSettingTempFileName))
+                    {
+                        // use tmp file instead of normal, it should be correct
+                        File.Move(fSettingTempFileName, fSettingFileName);
+                    }
+                }
+                catch
+                { 
+
+                }
+
                 if (File.Exists(fSettingFileName))
                 {
                     StreamReader lReader = File.OpenText(fSettingFileName);
@@ -422,13 +448,24 @@ namespace SaveGameBackupTool
         // Save configuration file
         public void SaveConfig()
         {
-            StreamWriter lWriter = File.CreateText(fSettingFileName);
-            Type lType = fSettings.GetType();
-            if (lType.IsSerializable)
+            StreamWriter lWriter = File.CreateText(fSettingTempFileName);
+            try
             {
-                System.Xml.Serialization.XmlSerializer lSerializer = new System.Xml.Serialization.XmlSerializer(lType);
-                lSerializer.Serialize(lWriter, fSettings);
-                lWriter.Close();
+                Type lType = fSettings.GetType();
+                if (lType.IsSerializable)
+                {
+                    System.Xml.Serialization.XmlSerializer lSerializer = new System.Xml.Serialization.XmlSerializer(lType);
+                    lSerializer.Serialize(lWriter, fSettings);
+                    lWriter.Close();
+                }
+
+                // save was succesfull, we can remove old file and use new one
+                File.Delete(fSettingFileName);
+                File.Move(fSettingTempFileName, fSettingFileName);
+            }
+            catch
+            {
+
             }
         }
     }

@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SaveGame Backup Tool")]
-[assembly: AssemblyCopyright("Copyright (c) 2018 sebeksd")]
+[assembly: AssemblyCopyright("Copyright (c) 2020 sebeksd")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,5 +51,5 @@ using System.Windows;
 // Możesz określić wszystkie wartości lub użyć domyślnych numerów kompilacji i poprawki
 // przy użyciu symbolu „*”, tak jak pokazano poniżej:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.14")]
-[assembly: AssemblyFileVersion("1.0.0.14")]
+[assembly: AssemblyVersion("1.0.0.15")]
+[assembly: AssemblyFileVersion("1.0.0.15")]
