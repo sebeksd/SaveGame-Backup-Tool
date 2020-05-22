@@ -217,8 +217,8 @@ namespace SaveGameBackupTool
             buttonManualBackup.ToolTip = "Perform a backup regardless of whether the files have been modified, if files are locked it will fail.";
             decimalUpDownBackupEvery.ToolTip = "Task will launch every few minutes (value set in this field) and it will check if file was modified and also if file is not locked.\r\n" +
                 "If file was not modified from last backup or it is locked for reading then next check will be triggered every 30 seconds (till backup is made).";
-            rectangleStatusIcon.ToolTip = "Global tasks status (works only for automated tasks), blue - tasks not checked, green - all tasks succeed or nothing to do, red - some task failed.\r\n" +
-                "In tray icon mode this status is also presented by icon in tray.";
+            rectangleStatusIcon.ToolTip = "Global tasks status (works only for automated tasks), blue - tasks not checked or nothing to do, green - all tasks succeed (at least one backup made), red - some task failed.\r\n" +
+                "In tray mode this status is also presented by icon (blue/green/red).";
 
             checkBoxAutomaticDestinationDirSizeLimit.ToolTip = "If this option is checked application will cleanup older files/backups from destination directory to maintain size limit set in by user (at least 4 last files remains).\r\n" +
                 "Manual and pre-restore backups are not counted towards this limit and they are not deleted (if needed you need to clean them manually).\r\n" +
