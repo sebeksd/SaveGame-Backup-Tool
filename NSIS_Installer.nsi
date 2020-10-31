@@ -22,8 +22,8 @@
 ;--------------------------------
 !define PROGRAM_NAME "SaveGame Backup Tool"
 !define DESCRIPTION "Application for automatic backup of Games Saves"
-!define COPYRIGHT "sebeksd (c) 2017"
-!define INSTALLER_VERSION "1.0.0.1"
+!define COPYRIGHT "sebeksd (c) 2020"
+!define INSTALLER_VERSION "1.0.0.2"
 
 !define MAIN_APP_EXE "SaveGame Backup Tool.exe"
 !define DESTINATION_PATH "Release"
@@ -46,6 +46,7 @@ VIAddVersionKey "FileVersion"  "${INSTALLER_VERSION}"
 
 SetCompressor /SOLID LZMA
 XPStyle on
+Unicode True
 
 ; The file to write
 OutFile "${DESTINATION_PATH}\Install_SaveGameBackupTool.exe"

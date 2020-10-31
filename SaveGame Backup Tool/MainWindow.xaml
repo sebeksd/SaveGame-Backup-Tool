@@ -31,7 +31,7 @@
         <Label x:Name="labelLastBackup" Content="Last backup:" HorizontalAlignment="Left" Margin="0,228,0,0" VerticalAlignment="Top" Width="76"/>
         <Label x:Name="labelLastBackupValue" Content="[never]" HorizontalAlignment="Left" Margin="76,228,0,0" VerticalAlignment="Top"/>
 
-        <xctk:DecimalUpDown x:Name="decimalUpDownBackupEvery" Margin="0,183,8,0" VerticalAlignment="Top" Maximum="1440" Minimum="1" Value="5" Text="Backup" ValueChanged="decimalUpDownBackupEvery_ValueChanged" HorizontalAlignment="Right" Width="57"/>
+        <xctk:DecimalUpDown x:Name="decimalUpDownBackupEvery" Margin="0,183,8,0" VerticalAlignment="Top" Maximum="604800" Minimum="1" Value="5" Text="Backup" ValueChanged="decimalUpDownBackupEvery_ValueChanged" HorizontalAlignment="Right" Width="57"/>
         <Label x:Name="label" Content="Backup every [min]:" Margin="0,179,70,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="113"/>
         <Grid Margin="0,287,0,0">
             <Grid.ColumnDefinitions>
