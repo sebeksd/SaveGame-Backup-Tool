@@ -448,9 +448,9 @@ namespace SaveGameBackupTool
         // Save configuration file
         public void SaveConfig()
         {
-            StreamWriter lWriter = File.CreateText(fSettingTempFileName);
             try
             {
+                StreamWriter lWriter = File.CreateText(fSettingTempFileName);
                 Type lType = fSettings.GetType();
                 if (lType.IsSerializable)
                 {
@@ -465,7 +465,8 @@ namespace SaveGameBackupTool
             }
             catch
             {
-
+                System.Windows.Application.Current.Shutdown();
+                System.Windows.MessageBox.Show("Can't save config, please check directory permissions", "Save Game Backup Tool - Critical Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
     }

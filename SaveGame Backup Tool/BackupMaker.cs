@@ -140,6 +140,9 @@ namespace SaveGameBackupTool
             {
                 try
                 {
+                    if (!lBackupTask.Settings.SourcePathHelper.ReCheck())
+                        throw new ArgumentException("Wrong source directory");
+
                     // check if we have path to directory or to single file
                     string[] lAllFiles = lBackupTask.Settings.SourcePathHelper.GetAllFiles();
 

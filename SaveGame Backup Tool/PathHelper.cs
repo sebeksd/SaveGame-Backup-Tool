@@ -116,5 +116,11 @@ namespace SaveGameBackupTool
             else
                 return null;
         }
+
+        public bool ReCheck()
+        {
+            SetPath(fOriginalPath);
+            return PathCorrect;
+        }
     }
 }

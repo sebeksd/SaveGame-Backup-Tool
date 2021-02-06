@@ -51,6 +51,8 @@ namespace SaveGameBackupTool
 
         Restore fRestore = null;
 
+        DispatcherOperation fTaskDispacher = null;
+
         private void OpenDirectoryInExplorer(string lPath)
         {
             try
@@ -502,11 +504,18 @@ namespace SaveGameBackupTool
 
         private void HandleTimer(Object source, ElapsedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            if (System.Environment.HasShutdownStarted)
+                return;
+
+            // run task only if previous one ended
+            if ((fTaskDispacher == null) || (fTaskDispacher.Status == DispatcherOperationStatus.Completed) || (fTaskDispacher.Status == DispatcherOperationStatus.Aborted))
             {
-                // go through all taskas and check if there is something to do
-                CheckTasks();
-            }));
+                fTaskDispacher = Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    // go through all taskas and check if there is something to do
+                    CheckTasks();
+                }));
+            }
         }
 
         private void OnClose(object sender, CancelEventArgs e)
