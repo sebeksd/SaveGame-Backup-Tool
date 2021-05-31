@@ -22,8 +22,8 @@
 ;--------------------------------
 !define PROGRAM_NAME "SaveGame Backup Tool"
 !define DESCRIPTION "Application for automatic backup of Games Saves"
-!define COPYRIGHT "sebeksd (c) 2020"
-!define INSTALLER_VERSION "1.0.0.2"
+!define COPYRIGHT "sebeksd (c) 2021"
+!define INSTALLER_VERSION "1.0.0.3"
 
 !define MAIN_APP_EXE "SaveGame Backup Tool.exe"
 !define DESTINATION_PATH "Release"
@@ -88,6 +88,7 @@ Section "Install"
   
   ; Write the uninstall keys for Windows
   WriteRegStr ${REG_ROOT} "${HKLM_REG_UNINSTALL_PATH}\${PROGRAM_NAME}" "DisplayName" "${PROGRAM_NAME}"
+  WriteRegStr ${REG_ROOT} "${HKLM_REG_UNINSTALL_PATH}\${PROGRAM_NAME}" "DisplayVersion" "${Expv_1}.${Expv_2}.${Expv_3}.${Expv_4}"
   WriteRegStr ${REG_ROOT} "${HKLM_REG_UNINSTALL_PATH}\${PROGRAM_NAME}" "UninstallString" '"$INSTDIR\uninstall.exe"'
   WriteRegStr ${REG_ROOT} "${HKLM_REG_UNINSTALL_PATH}\${PROGRAM_NAME}" "InstallLocation" '"$INSTDIR\"'
   WriteRegDWORD ${REG_ROOT} "${HKLM_REG_UNINSTALL_PATH}\${PROGRAM_NAME}" "NoModify" 1
