@@ -18,6 +18,7 @@
 */
 
 using System;
+using System.IO.Compression;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -56,7 +57,7 @@ namespace SaveGameBackupTool
                             lFound = true;
 
                             // do backup
-                            BackupMaker lBackupMaker = new BackupMaker();
+                            BackupMaker lBackupMaker = new BackupMaker((CompressionLevel)lSettings.Settings.ZIP_CompressionLevel);
                             string lErrorMessage = "";
 
                             if (lBackupMaker.MakeBackup(lBackupTask, BackupType.btNormal, ref lErrorMessage))

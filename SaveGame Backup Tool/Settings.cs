@@ -21,6 +21,7 @@ using ByteSizeLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 
 // Based on http://stackoverflow.com/a/33917532
 
@@ -30,6 +31,7 @@ namespace SaveGameBackupTool
     public class AppSettings
     {
         public int LastSelectedTaskIndex;
+        public int ZIP_CompressionLevel = (int)CompressionLevel.Fastest;
         public List<BackupTask> BackupTasks = new List<BackupTask>();
 
         // window possition settings
@@ -345,6 +347,7 @@ namespace SaveGameBackupTool
             fSettings.BackupTasks.Add(new BackupTask());
 
             fSettings.LastSelectedTaskIndex = 0;
+            fSettings.ZIP_CompressionLevel = (int)CompressionLevel.Fastest;
 
             //foreach (BackupTaskSettings lBackupTask in fSettings.BackupTasks)
             //    lBackupTask.SetDefault();
@@ -356,6 +359,9 @@ namespace SaveGameBackupTool
         // Validate config and set defaults
         public void ValidateConfig()
         {
+            if (fSettings.ZIP_CompressionLevel < 0 || fSettings.ZIP_CompressionLevel > 9)
+                fSettings.ZIP_CompressionLevel = (int)CompressionLevel.Fastest;
+
             if (fSettings.BackupTasks.Count == 0)
                 SetDefaults();
             else

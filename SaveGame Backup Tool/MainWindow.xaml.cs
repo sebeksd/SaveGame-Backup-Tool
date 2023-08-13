@@ -28,6 +28,7 @@ using Hardcodet.Wpf.TaskbarNotification;
 using ByteSizeLib;
 using System.IO;
 using Microsoft.Win32;
+using System.IO.Compression;
 
 namespace SaveGameBackupTool
 {
@@ -122,11 +123,10 @@ namespace SaveGameBackupTool
             fApplicationInstanceManager = new ApplicationInstanceManager();
             CreateTypicalLocationsMenu();
             
-
-            fBackupMaker = new BackupMaker();
-
             fSettings = new SettingsManager();
             fSettings.LoadConfig();
+
+            fBackupMaker = new BackupMaker((CompressionLevel)fSettings.Settings.ZIP_CompressionLevel);
 
             // set window position
             if (fSettings.Settings.Window.PositionKnown)

@@ -35,10 +35,10 @@ namespace SaveGameBackupTool
 
     public class BackupMaker
     {
-        public BackupMaker()
+        private readonly CompressionLevel fZIP_CompressionLevel;
+        public BackupMaker(CompressionLevel lZIP_CompressionLevel)
         {
-
-
+            fZIP_CompressionLevel = lZIP_CompressionLevel;
         }
 
         private string BackupTypeToFilePostfix(BackupType lType, string lManualPostfix)
@@ -252,9 +252,9 @@ namespace SaveGameBackupTool
 
                 // try to make a backup
                 if (lBackupTask.Settings.SourcePathHelper.IsFile)
-                    ZipHelper.CreateFromFile(lBackupTask.Settings.SourcePathHelper.FilePath, lDestinationPath + lBackupFileName, CompressionLevel.Fastest, false, null, null);
+                    ZipHelper.CreateFromFile(lBackupTask.Settings.SourcePathHelper.FilePath, lDestinationPath + lBackupFileName, fZIP_CompressionLevel, false, null, null);
                 else
-                    ZipHelper.CreateFromDirectory(lBackupTask.Settings.SourcePathHelper.DirectoryPath, lDestinationPath + lBackupFileName, CompressionLevel.Fastest, false, null, lFilterFileName => !CheckFilterForFile(lBackupTask.Settings.FileFilterRegex, lFilterFileName));
+                    ZipHelper.CreateFromDirectory(lBackupTask.Settings.SourcePathHelper.DirectoryPath, lDestinationPath + lBackupFileName, fZIP_CompressionLevel, false, null, lFilterFileName => !CheckFilterForFile(lBackupTask.Settings.FileFilterRegex, lFilterFileName));
                 
                 pErrorMessage = "";
 
